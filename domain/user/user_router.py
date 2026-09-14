@@ -3,14 +3,13 @@ from sqlalchemy.orm import Session
 from starlette import status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import FileResponse
-from config import UPLOAD_DIR, PROFILE_DIR
-import os
-import shutil
+import os, shutil
 from db import get_db
-from models import Users
+from models import Users, AccountRequests
 from auth import create_access_token, get_current_user
-from mailer import send_reset_code, send_register_code, verify_code, send_dormant_unlock_code
 from domain.user import user_crud, user_schema
+from domain.user.user_crud import passwd_context
+from config import PROFILE_DIR
 
 os.makedirs(PROFILE_DIR, exist_ok=True)
 
@@ -21,32 +20,6 @@ def require_admin(current_user: Users = Depends(get_current_user)):
     if not current_user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required.")
     return current_user
-
-
-@router.post("/email/verify-request")
-def email_verify_request(body: user_schema.EmailVerifyRequest, db: Session = Depends(get_db)):
-    existing = db.query(Users).filter(Users.email == body.email).first()
-    if existing:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already in use.")
-    send_register_code(body.email)
-    return {"message": "Verification code sent."}
-
-
-@router.post("/email/verify-confirm")
-def email_verify_confirm(body: user_schema.EmailVerifyConfirm):
-    if not verify_code(body.email, body.code, code_type="register"):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code.")
-    return {"message": "Email verified."}
-
-
-@router.post("/create", status_code=status.HTTP_204_NO_CONTENT)
-def user_create(_user_create: user_schema.UserCreate, db: Session = Depends(get_db)):
-    user = user_crud.get_existing_user(db, user_create=_user_create)
-    if user:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="This user already exists.")
-    result = user_crud.create_user(db=db, user_create=_user_create)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Maximum number of members ({user_crud.MAX_ACCOUNT}) has been exceeded.")
 
 
 @router.post("/login", response_model=user_schema.Token)
@@ -63,6 +36,29 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 @router.get("/me", response_model=user_schema.UserResponse)
 def get_me(current_user: Users = Depends(get_current_user)):
     return current_user
+
+
+@router.post("/request", status_code=status.HTTP_204_NO_CONTENT)
+def submit_account_request(body: user_schema.AccountRequestCreate, db: Session = Depends(get_db)):
+    if db.query(Users).filter(Users.name == body.name).first():
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already taken.")
+    if db.query(Users).filter(Users.email == body.email).first():
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already in use.")
+    existing = db.query(AccountRequests).filter(
+        AccountRequests.name == body.name,
+        AccountRequests.status == "pending"
+    ).first()
+    if existing:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="A request with this username is already pending.")
+    req = AccountRequests(
+        name=body.name,
+        email=body.email,
+        passwd=passwd_context.hash(body.passwd1),
+        message=body.message,
+        status="pending"
+    )
+    db.add(req)
+    db.commit()
 
 
 @router.post("/settings/verify")
@@ -84,8 +80,7 @@ def update_name(
 ):
     if not user_crud.verify_password(db, current_user, body.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password.")
-    existing = db.query(Users).filter(Users.name == body.new_name).first()
-    if existing:
+    if db.query(Users).filter(Users.name == body.new_name).first():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already taken.")
     user_crud.update_name(db, current_user, body.new_name)
     new_token = create_access_token(data={"sub": body.new_name})
@@ -100,8 +95,7 @@ def update_email(
 ):
     if not user_crud.verify_password(db, current_user, body.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password.")
-    existing = db.query(Users).filter(Users.email == body.new_email).first()
-    if existing:
+    if db.query(Users).filter(Users.email == body.new_email).first():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already in use.")
     user_crud.update_email(db, current_user, body.new_email)
     return {"message": "Email updated."}
@@ -128,16 +122,23 @@ async def upload_profile_image(
     allowed_types = {"image/jpeg", "image/png", "image/webp", "image/gif"}
     if file.content_type not in allowed_types:
         raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, detail="Only image files are allowed.")
-
     ext = file.filename.rsplit(".", 1)[-1].lower()
     filename = f"{current_user.id}_profile.{ext}"
     file_path = os.path.join(PROFILE_DIR, filename)
-
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-
     user_crud.update_profile_image(db, current_user, file_path)
     return {"message": "Profile image updated.", "path": f"/api/user/profile-image/{current_user.id}"}
+
+
+@router.delete("/settings/profile-image", status_code=status.HTTP_204_NO_CONTENT)
+def delete_profile_image(
+    current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.profile_image and os.path.exists(current_user.profile_image):
+        os.remove(current_user.profile_image)
+    user_crud.update_profile_image(db, current_user, None)
 
 
 @router.get("/profile-image/{user_id}")
@@ -159,46 +160,6 @@ def delete_account(
     if not user_crud.verify_password(db, current_user, body.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password.")
     user_crud.delete_user(db, current_user)
-
-
-@router.post("/password/reset-request")
-def reset_request(email: str, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.email == email).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="This email address does not exist.")
-    send_reset_code(email)
-    return {"message": "A verification code has been sent."}
-
-
-@router.post("/password/reset")
-def reset_password(email: str, code: str, new_password: str, db: Session = Depends(get_db)):
-    if not verify_code(email, code, code_type="reset"):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The verification code is incorrect or has expired.")
-    user = db.query(Users).filter(Users.email == email).first()
-    user_crud.update_password(db, user, new_password)
-    return {"message": "Your password has been changed."}
-
-
-@router.post("/dormant/unlock-request")
-def dormant_unlock_request(email: str, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.email == email).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Email not found.")
-    if not user.is_dormant:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Account is not dormant.")
-    send_dormant_unlock_code(email)
-    return {"message": "Unlock code sent to your email."}
-
-
-@router.post("/dormant/unlock-confirm")
-def dormant_unlock_confirm(email: str, code: str, db: Session = Depends(get_db)):
-    if not verify_code(email, code, code_type="dormant"):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code.")
-    user = db.query(Users).filter(Users.email == email).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
-    user_crud.activate_dormant(db, user)
-    return {"message": "Account reactivated. You can now sign in."}
 
 
 @router.get("/admin/users", response_model=list[user_schema.UserResponse])
@@ -261,21 +222,6 @@ def admin_dormant_unlock(
     user_crud.activate_dormant(db, user)
 
 
-@router.get("/admin/config")
-def get_config(current_user: Users = Depends(require_admin)):
-    return {"max_account": user_crud.MAX_ACCOUNT}
-
-
-@router.delete("/settings/profile-image", status_code=status.HTTP_204_NO_CONTENT)
-def delete_profile_image(
-    current_user: Users = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    if current_user.profile_image and os.path.exists(current_user.profile_image):
-        os.remove(current_user.profile_image)
-    user_crud.update_profile_image(db, current_user, None)
-
-
 @router.patch("/admin/users/{user_id}/storage-limit")
 def admin_set_storage_limit(
     user_id: int,
@@ -289,3 +235,76 @@ def admin_set_storage_limit(
     limit_bytes = int(limit_gb * 1073741824) if limit_gb is not None else None
     user_crud.set_storage_limit(db, user, limit_bytes)
     return {"message": "Storage limit updated."}
+
+
+@router.get("/admin/config")
+def get_config(current_user: Users = Depends(require_admin)):
+    from config import MAX_ACCOUNT
+    return {"max_account": MAX_ACCOUNT}
+
+
+@router.get("/admin/requests", response_model=list[user_schema.AccountRequestResponse])
+def admin_get_requests(
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(require_admin)
+):
+    return db.query(AccountRequests).filter(
+        AccountRequests.status == "pending"
+    ).order_by(AccountRequests.created_at.desc()).all()
+
+
+@router.post("/admin/requests/{req_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
+def admin_approve_request(
+    req_id: int,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(require_admin)
+):
+    req = db.query(AccountRequests).filter(AccountRequests.id == req_id).first()
+    if not req:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Request not found.")
+
+    if db.query(Users).filter(Users.name == req.name).first():
+        req.status = "rejected"
+        db.commit()
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already taken. Request rejected.")
+    if db.query(Users).filter(Users.email == req.email).first():
+        req.status = "rejected"
+        db.commit()
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already in use. Request rejected.")
+
+    from config import MAX_ACCOUNT, UPLOAD_DIR
+    from datetime import datetime
+    user_count = db.query(Users).filter(Users.is_admin == False).count()
+    if user_count >= MAX_ACCOUNT:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Max account limit ({MAX_ACCOUNT}) reached.")
+
+    new_user = Users(
+        name=req.name,
+        passwd=req.passwd,
+        email=req.email,
+        is_admin=False
+    )
+    db.add(new_user)
+    db.flush()
+
+    date_str = datetime.now().strftime("%Y%m%d")
+    dir_name = f"{new_user.id}_{new_user.name}_{date_str}"
+    storage_path = os.path.join(UPLOAD_DIR, dir_name)
+    os.makedirs(storage_path, exist_ok=True)
+    new_user.storage_path = storage_path
+
+    db.delete(req)
+    db.commit()
+
+
+@router.delete("/admin/requests/{req_id}/reject", status_code=status.HTTP_204_NO_CONTENT)
+def admin_reject_request(
+    req_id: int,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(require_admin)
+):
+    req = db.query(AccountRequests).filter(AccountRequests.id == req_id).first()
+    if not req:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Request not found.")
+    db.delete(req)
+    db.commit()
