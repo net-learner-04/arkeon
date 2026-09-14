@@ -28,6 +28,38 @@ class UserCreate(BaseModel):
         return v
 
 
+class AccountRequestCreate(BaseModel):
+    name: str
+    email: EmailStr
+    passwd1: str
+    passwd2: str
+    message: Optional[str] = None
+
+    @field_validator('name', 'passwd1', 'passwd2')
+    def not_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError("Blank entries are not allowed.")
+        return v
+
+    @field_validator('passwd2')
+    def passwd_check(cls, v, info: FieldValidationInfo):
+        if 'passwd1' in info.data and v != info.data['passwd1']:
+            raise ValueError("Password does not match.")
+        return v
+
+
+class AccountRequestResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+    message: Optional[str] = None
+    created_at: datetime
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
 class UserUpdateName(BaseModel):
     new_name: str
     password: str
@@ -82,15 +114,6 @@ class UserVerifyPassword(BaseModel):
     password: str
 
 
-class EmailVerifyRequest(BaseModel):
-    email: EmailStr
-
-
-class EmailVerifyConfirm(BaseModel):
-    email: EmailStr
-    code: str
-
-
 class UserResponse(BaseModel):
     id: int
     name: str
@@ -102,6 +125,7 @@ class UserResponse(BaseModel):
     is_dormant: bool = False
     profile_image: Optional[str] = None
     storage_path: Optional[str] = None
+    storage_limit: Optional[int] = None
 
     class Config:
         from_attributes = True
