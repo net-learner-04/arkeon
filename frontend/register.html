@@ -4,80 +4,41 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Arkeon</title>
-
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'><rect width='120' height='120' rx='28' fill='%230e7490'/><polygon points='60,18 95,38 95,78 60,98 25,78 25,38' stroke='white' stroke-width='4' fill='none' opacity='.95'/><polygon points='60,34 80,45 80,68 60,80 40,68 40,45' stroke='white' stroke-width='2.5' fill='white' opacity='.18'/><line x1='60' y1='18' x2='60' y2='34' stroke='white' stroke-width='2' opacity='.55'/><line x1='95' y1='38' x2='80' y2='45' stroke='white' stroke-width='2' opacity='.55'/><line x1='95' y1='78' x2='80' y2='68' stroke='white' stroke-width='2' opacity='.55'/><line x1='60' y1='98' x2='60' y2='80' stroke='white' stroke-width='2' opacity='.55'/><line x1='25' y1='78' x2='40' y2='68' stroke='white' stroke-width='2' opacity='.55'/><line x1='25' y1='38' x2='40' y2='45' stroke='white' stroke-width='2' opacity='.55'/><circle cx='60' cy='57' r='10' fill='white' opacity='.95'/></svg>"/>
-
   <link rel="stylesheet" href="css/style.css"/>
-
-  <style>
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 0.95rem;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .nav-logo-icon {
-      width: 26px;
-      height: 26px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .nav-logo-icon svg {
-      width: 26px;
-      height: 26px;
-      display: block;
-    }
-
-    .auth-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .auth-logo-icon {
-      width: 26px;
-      height: 26px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .auth-logo-icon svg {
-      width: 26px;
-      height: 26px;
-      display: block;
-    }
-  </style>
 </head>
-
 <body>
-  <div class="bg-canvas">
-    <div class="bg-orb"></div>
-    <div class="bg-orb"></div>
-    <div class="bg-orb"></div>
-  </div>
+  <div class="bg-canvas"><div class="bg-orb"></div><div class="bg-orb"></div><div class="bg-orb"></div></div>
 
   <nav class="topbar-global">
     <a href="/" class="nav-logo">
-      <div class="nav-logo-icon">
-        <svg width="26" height="26" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="120" height="120" rx="28" fill="url(#navLogoGradient)"/>
-          <defs>
-            <linearGradient id="navLogoGradient" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
-              <stop offset="0%" stop-color="#06b6d4"/>
-              <stop offset="100%" stop-color="#8b5cf6"/>
-            </linearGradient>
-          </defs>
-          <rect width="120" height="60" rx="28" fill="white" opacity="0.06"/>
+      <svg class="nav-logo-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="120" height="120" rx="28" fill="url(#rg1)"/>
+        <defs><linearGradient id="rg1" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+        <polygon points="60,18 95,38 95,78 60,98 25,78 25,38" stroke="white" stroke-width="4" fill="none" opacity=".95"/>
+        <polygon points="60,34 80,45 80,68 60,80 40,68 40,45" stroke="white" stroke-width="2.5" fill="white" opacity=".18"/>
+        <line x1="60" y1="18" x2="60" y2="34" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="95" y1="38" x2="80" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="95" y1="78" x2="80" y2="68" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="60" y1="98" x2="60" y2="80" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="25" y1="78" x2="40" y2="68" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="25" y1="38" x2="40" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
+        <circle cx="60" cy="57" r="10" fill="white" opacity=".95"/>
+      </svg>
+      Arkeon
+    </a>
+    <div class="nav-right">
+      <button class="theme-toggle"></button>
+      <a href="login.html" class="btn-nav-ghost">Sign In</a>
+    </div>
+  </nav>
+
+  <div class="auth-page page">
+    <div class="glass auth-card">
+      <a href="/" class="auth-logo">
+        <svg class="auth-logo-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="120" height="120" rx="28" fill="url(#rg2)"/>
+          <defs><linearGradient id="rg2" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
           <polygon points="60,18 95,38 95,78 60,98 25,78 25,38" stroke="white" stroke-width="4" fill="none" opacity=".95"/>
           <polygon points="60,34 80,45 80,68 60,80 40,68 40,45" stroke="white" stroke-width="2.5" fill="white" opacity=".18"/>
           <line x1="60" y1="18" x2="60" y2="34" stroke="white" stroke-width="2" opacity=".55"/>
@@ -88,274 +49,74 @@
           <line x1="25" y1="38" x2="40" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
           <circle cx="60" cy="57" r="10" fill="white" opacity=".95"/>
         </svg>
-      </div>
-      Arkeon
-    </a>
-
-    <div class="nav-right">
-      <button class="theme-toggle"></button>
-      <a href="login.html" class="btn-nav">Sign in</a>
-    </div>
-  </nav>
-
-  <div class="auth-page page">
-    <div class="glass auth-card">
-
-      <a href="/" class="auth-logo">
-        <div class="auth-logo-icon">
-          <svg width="26" height="26" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="120" height="120" rx="28" fill="url(#authLogoGradient)"/>
-            <defs>
-              <linearGradient id="authLogoGradient" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
-                <stop offset="0%" stop-color="#06b6d4"/>
-                <stop offset="100%" stop-color="#8b5cf6"/>
-              </linearGradient>
-            </defs>
-            <rect width="120" height="60" rx="28" fill="white" opacity="0.06"/>
-            <polygon points="60,18 95,38 95,78 60,98 25,78 25,38" stroke="white" stroke-width="4" fill="none" opacity=".95"/>
-            <polygon points="60,34 80,45 80,68 60,80 40,68 40,45" stroke="white" stroke-width="2.5" fill="white" opacity=".18"/>
-            <line x1="60" y1="18" x2="60" y2="34" stroke="white" stroke-width="2" opacity=".55"/>
-            <line x1="95" y1="38" x2="80" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
-            <line x1="95" y1="78" x2="80" y2="68" stroke="white" stroke-width="2" opacity=".55"/>
-            <line x1="60" y1="98" x2="60" y2="80" stroke="white" stroke-width="2" opacity=".55"/>
-            <line x1="25" y1="78" x2="40" y2="68" stroke="white" stroke-width="2" opacity=".55"/>
-            <line x1="25" y1="38" x2="40" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
-            <circle cx="60" cy="57" r="10" fill="white" opacity=".95"/>
-          </svg>
-        </div>
         <span>Arkeon</span>
       </a>
 
-      <div class="step-indicator" style="display:flex;gap:0.4rem;margin-bottom:1.75rem;">
-        <div class="step-dot active" id="dot1" style="height:3px;flex:1;border-radius:99px;background:var(--accent);transition:all 0.3s;"></div>
-        <div class="step-dot" id="dot2" style="height:3px;flex:1;border-radius:99px;background:var(--glass-b);transition:all 0.3s;"></div>
-        <div class="step-dot" id="dot3" style="height:3px;flex:1;border-radius:99px;background:var(--glass-b);transition:all 0.3s;"></div>
-      </div>
-
-      <div id="step1">
-        <h1 class="auth-heading">Create account</h1>
-        <p class="auth-sub">Step 1 of 3 — Enter your details</p>
-
-        <div id="alert1" class="alert" style="margin-bottom:1rem;"></div>
-
+      <!-- Form -->
+      <div id="formSection">
+        <h1 class="auth-heading">Request access</h1>
+        <p class="auth-sub">Fill in your details. An administrator will review and approve your request.</p>
+        <div id="alert" class="alert" style="margin-bottom:1rem;"></div>
         <div class="form-stack">
+          <div class="form-group"><label>Username</label><input type="text" id="regName" placeholder="Choose a username" autocomplete="username"/></div>
+          <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email"/></div>
+          <div class="form-group"><label>Password</label><input type="password" id="regPw1" placeholder="Create a strong password" autocomplete="new-password"/></div>
+          <div class="form-group"><label>Confirm password</label><input type="password" id="regPw2" placeholder="Repeat your password" autocomplete="new-password"/></div>
           <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="username" placeholder="Choose a username" autocomplete="username"/>
+            <label>Message <span style="color:var(--text3);font-weight:400;">(optional)</span></label>
+            <input type="text" id="regMsg" placeholder="Why do you need access?"/>
           </div>
-
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="email" placeholder="your@email.com" autocomplete="email"/>
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="passwd1" placeholder="Create a strong password" autocomplete="new-password"/>
-          </div>
-
-          <div class="form-group">
-            <label>Confirm password</label>
-            <input type="password" id="passwd2" placeholder="Repeat your password" autocomplete="new-password"/>
-          </div>
-
-          <button class="btn btn-primary" id="nextBtn">
-            Continue
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
+          <button class="btn btn-primary" id="submitBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Submit Request
           </button>
         </div>
+        <div class="auth-footer">Already have an account? <a href="login.html">Sign in</a></div>
       </div>
 
-      <div id="step2" style="display:none;">
-        <h1 class="auth-heading">Verify email</h1>
-        <p class="auth-sub" id="step2Sub">Step 2 of 3 — Enter the code sent to your email</p>
-
-        <div id="alert2" class="alert" style="margin-bottom:1rem;"></div>
-
-        <div class="form-stack">
-          <div class="form-group">
-            <label>Verification code</label>
-            <input type="text" id="verifyCode" placeholder="000000" maxlength="6" style="text-align:center;letter-spacing:0.35em;font-size:1.35rem;font-weight:800;"/>
-          </div>
-
-          <button class="btn btn-primary" id="verifyBtn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            Verify & Create Account
-          </button>
-
-          <button class="btn btn-ghost" id="resendBtn" style="width:100%;">Resend code</button>
-          <button class="btn btn-ghost" id="backBtn" style="width:100%;">← Back</button>
-        </div>
+      <!-- Success -->
+      <div id="successSection" style="display:none;text-align:center;">
+        <div style="width:64px;height:64px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.22);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.75rem;">✓</div>
+        <h1 class="auth-heading" style="font-size:1.4rem;">Request submitted</h1>
+        <p class="auth-sub">Your account request has been sent to the administrator. You will be able to sign in once it is approved.</p>
+        <a href="login.html" class="btn btn-primary" style="margin-top:0.5rem;text-decoration:none;display:inline-flex;">Go to Sign In</a>
       </div>
-
-      <div id="step3" style="display:none;text-align:center;padding:1rem 0;">
-        <div style="width:64px;height:64px;background:linear-gradient(135deg,rgba(99,102,241,0.18),rgba(139,92,246,0.18));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.75rem;">✓</div>
-        <h1 class="auth-heading">You're in!</h1>
-        <p class="auth-sub">Account created successfully. Redirecting to sign in...</p>
-      </div>
-
-      <div class="auth-footer">
-        Already have an account? <a href="login.html">Sign in</a>
-      </div>
-
     </div>
   </div>
 
   <script src="js/api.js"></script>
-
   <script>
-    let formData = {};
+    if (auth.getToken()) window.location.href = "dashboard.html";
 
-    function setStep(n) {
-      [1,2,3].forEach(i => {
-        document.getElementById(`step${i}`).style.display = i === n ? "block" : "none";
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const pw1 = document.getElementById("regPw1").value;
+      const pw2 = document.getElementById("regPw2").value;
+      const msg = document.getElementById("regMsg").value.trim();
+      const a = document.getElementById("alert");
 
-        const dot = document.getElementById(`dot${i}`);
-        dot.style.background = i <= n ? "var(--accent)" : "var(--glass-b)";
-      });
+      if (!name || !email || !pw1 || !pw2) { showAlert(a, "Please fill in all required fields."); return; }
+      if (pw1 !== pw2) { showAlert(a, "Passwords do not match."); return; }
+      if (pw1.length < 6) { showAlert(a, "Password must be at least 6 characters."); return; }
 
-      if (n === 3) {
-        document.getElementById("step3").style.display = "block";
-      }
-    }
+      const btn = document.getElementById("submitBtn");
+      btn.textContent = "Submitting..."; btn.disabled = true; hideAlert(a);
 
-    document.getElementById("nextBtn").addEventListener("click", async () => {
-      const name = document.getElementById("username").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const passwd1 = document.getElementById("passwd1").value;
-      const passwd2 = document.getElementById("passwd2").value;
-      const a = document.getElementById("alert1");
-
-      if (!name || !email || !passwd1 || !passwd2) {
-        showAlert(a, "Please fill in all fields.");
-        return;
-      }
-
-      if (passwd1 !== passwd2) {
-        showAlert(a, "Passwords do not match.");
-        return;
-      }
-
-      if (passwd1.length < 6) {
-        showAlert(a, "Password must be at least 6 characters.");
-        return;
-      }
-
-      const btn = document.getElementById("nextBtn");
-      btn.textContent = "Sending code...";
-      btn.disabled = true;
-      hideAlert(a);
-
-      const res = await fetch(`${API}/api/user/email/verify-request`, {
+      const res = await apiFetch("/api/user/request", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email})
+        body: JSON.stringify({name, email, passwd1: pw1, passwd2: pw2, message: msg || null})
       });
 
-      const d = await res.json();
-
-      if (res.ok) {
-        formData = {name, email, passwd1, passwd2};
-        document.getElementById("step2Sub").textContent = `Step 2 of 3 — Code sent to ${email}`;
-        setStep(2);
+      if (res && (res.ok || res.status === 204)) {
+        document.getElementById("formSection").style.display = "none";
+        document.getElementById("successSection").style.display = "block";
       } else {
-        showAlert(a, d.detail || "Failed to send verification code.");
-
-        btn.innerHTML = `Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+        const d = await res.json();
+        showAlert(a, d.detail || "Failed to submit request.");
+        btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Request`;
         btn.disabled = false;
       }
-    });
-
-    document.getElementById("verifyBtn").addEventListener("click", async () => {
-      const code = document.getElementById("verifyCode").value.trim();
-      const a = document.getElementById("alert2");
-
-      if (!code) {
-        showAlert(a, "Please enter the verification code.");
-        return;
-      }
-
-      const btn = document.getElementById("verifyBtn");
-      btn.textContent = "Verifying...";
-      btn.disabled = true;
-      hideAlert(a);
-
-      const verifyRes = await fetch(`${API}/api/user/email/verify-confirm`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          email: formData.email,
-          code
-        })
-      });
-
-      if (!verifyRes.ok) {
-        const d = await verifyRes.json();
-
-        showAlert(a, d.detail || "Invalid or expired code.");
-
-        btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verify & Create Account`;
-
-        btn.disabled = false;
-        return;
-      }
-
-      const createRes = await fetch(`${API}/api/user/create`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(formData)
-      });
-
-      if (createRes.status === 204) {
-        setStep(3);
-        setTimeout(() => window.location.href = "login.html", 2000);
-      } else {
-        const d = await createRes.json();
-
-        showAlert(a, d.detail || "Registration failed.");
-
-        btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verify & Create Account`;
-
-        btn.disabled = false;
-      }
-    });
-
-    document.getElementById("resendBtn").addEventListener("click", async () => {
-      const a = document.getElementById("alert2");
-      const btn = document.getElementById("resendBtn");
-
-      btn.textContent = "Sending...";
-      btn.disabled = true;
-
-      const res = await fetch(`${API}/api/user/email/verify-request`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          email: formData.email
-        })
-      });
-
-      if (res.ok) {
-        showAlert(a, "Code resent! Check your inbox.", "success");
-      } else {
-        showAlert(a, "Failed to resend code.");
-      }
-
-      btn.textContent = "Resend code";
-      btn.disabled = false;
-    });
-
-    document.getElementById("backBtn").addEventListener("click", () => {
-      setStep(1);
-
-      document.getElementById("nextBtn").innerHTML = `Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
-
-      document.getElementById("nextBtn").disabled = false;
     });
   </script>
 </body>
