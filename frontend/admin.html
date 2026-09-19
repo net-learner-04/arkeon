@@ -7,7 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'><rect width='120' height='120' rx='28' fill='%230e7490'/><polygon points='60,18 95,38 95,78 60,98 25,78 25,38' stroke='white' stroke-width='4' fill='none' opacity='.95'/><polygon points='60,34 80,45 80,68 60,80 40,68 40,45' stroke='white' stroke-width='2.5' fill='white' opacity='.18'/><line x1='60' y1='18' x2='60' y2='34' stroke='white' stroke-width='2' opacity='.55'/><circle cx='60' cy='57' r='10' fill='white' opacity='.95'/></svg>"/>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
-    .modal-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:2rem;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity 0.22s ease;}
+    .modal-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity 0.22s ease;}
     .modal-overlay.open{opacity:1;pointer-events:all;}
     .modal{width:100%;max-width:420px;padding:1.75rem;animation:modal-in 0.28s cubic-bezier(0.34,1.5,0.64,1);}
     @keyframes modal-in{from{opacity:0;transform:scale(0.95) translateY(12px);}to{opacity:1;transform:none;}}
@@ -15,19 +15,41 @@
     .modal-title{font-size:1rem;font-weight:800;flex:1;}
     .modal-close{background:none;border:none;cursor:pointer;color:var(--text3);padding:0.3rem;border-radius:6px;transition:all var(--t);display:flex;align-items:center;}
     .modal-close:hover{color:var(--text);background:var(--surface2);}
-    .storage-mini{height:3px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:4px;}
-    .storage-mini-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;}
+
     .tab-bar{display:flex;gap:0.3rem;margin-bottom:1.75rem;background:var(--surface);border-radius:var(--radius-sm);padding:0.3rem;}
     .tab{flex:1;padding:0.55rem;border-radius:6px;border:none;background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;font-size:0.84rem;font-weight:600;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:0.4rem;}
     .tab.active{background:var(--glass);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,0.15);}
     .tab:hover:not(.active){color:var(--text);}
-    .req-card{display:flex;align-items:center;gap:0.85rem;padding:1rem 1.1rem;border-radius:var(--radius-sm);border:1px solid var(--glass-b);background:var(--glass);animation:file-in 0.22s ease both;}
+
+    .req-card{display:flex;align-items:flex-start;gap:0.85rem;padding:1rem 1.1rem;border-radius:var(--radius-sm);border:1px solid var(--glass-b);background:var(--glass);animation:file-in 0.22s ease both;}
     @keyframes file-in{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:none;}}
     .req-info{flex:1;min-width:0;}
     .req-name{font-size:0.88rem;font-weight:700;}
     .req-meta{font-size:0.75rem;color:var(--text3);margin-top:0.15rem;display:flex;gap:0.6rem;flex-wrap:wrap;}
     .req-msg{font-size:0.78rem;color:var(--text2);margin-top:0.3rem;padding:0.4rem 0.6rem;background:var(--surface2);border-radius:5px;font-style:italic;}
-    .req-actions{display:flex;gap:0.4rem;flex-shrink:0;}
+    .req-actions{display:flex;gap:0.4rem;flex-shrink:0;align-items:center;}
+
+    @media(max-width:900px){
+      .col-email,.col-storage{ display:none; }
+    }
+    @media(max-width:768px){
+      .mobile-menu-btn{display:flex;}
+      .sidebar{transform:translateX(-100%);transition:transform 0.3s ease;z-index:200;}
+      .sidebar.open{transform:translateX(0);}
+      .main{margin-left:0!important;}
+      .col-role,.col-lastlogin{ display:none; }
+      .stat-mini{ grid-template-columns:repeat(3,1fr); }
+      .user-table td,.user-table th{ padding:0.6rem 0.5rem; font-size:0.78rem; }
+      .action-row{ flex-wrap:wrap; gap:0.25rem; }
+      .req-card{ flex-wrap:wrap; }
+      .req-actions{ width:100%; justify-content:flex-end; margin-top:0.5rem; }
+      .req-actions .btn{ flex:1; justify-content:center; }
+    }
+    @media(max-width:480px){
+      .stat-mini{ grid-template-columns:repeat(2,1fr); }
+      .content{ padding:1rem; }
+      .col-status{ display:none; }
+    }
   </style>
 </head>
 <body>
@@ -115,10 +137,9 @@
           </button>
         </div>
 
-        <!-- Members Tab -->
         <div id="membersTab">
           <div class="stat-mini">
-            <div class="stat-mini-card"><div class="stat-mini-label">Total Users</div><div class="stat-mini-val" id="statTotal">—</div></div>
+            <div class="stat-mini-card"><div class="stat-mini-label">Total</div><div class="stat-mini-val" id="statTotal">—</div></div>
             <div class="stat-mini-card"><div class="stat-mini-label">Active</div><div class="stat-mini-val" id="statActive" style="color:var(--success);">—</div></div>
             <div class="stat-mini-card"><div class="stat-mini-label">Locked</div><div class="stat-mini-val" id="statLocked" style="color:var(--danger);">—</div></div>
             <div class="stat-mini-card"><div class="stat-mini-label">Dormant</div><div class="stat-mini-val" id="statDormant" style="color:var(--accent3);">—</div></div>
@@ -130,11 +151,11 @@
               <thead>
                 <tr>
                   <th>User</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Last Login</th>
-                  <th>Storage</th>
+                  <th class="col-email">Email</th>
+                  <th class="col-role">Role</th>
+                  <th class="col-status">Status</th>
+                  <th class="col-lastlogin">Last Login</th>
+                  <th class="col-storage">Storage Limit</th>
                   <th style="text-align:right;">Actions</th>
                 </tr>
               </thead>
@@ -145,7 +166,6 @@
           </div>
         </div>
 
-        <!-- Requests Tab -->
         <div id="requestsTab" style="display:none;">
           <div class="section-hdr"><span class="section-title">Pending Account Requests</span></div>
           <div id="requestsList" style="display:flex;flex-direction:column;gap:0.5rem;">
@@ -156,7 +176,6 @@
     </main>
   </div>
 
-  <!-- Delete Modal -->
   <div class="modal-overlay" id="deleteOverlay" onclick="if(event.target.id==='deleteOverlay')closeDeleteModal()">
     <div class="glass modal">
       <div class="modal-header">
@@ -174,7 +193,6 @@
     </div>
   </div>
 
-  <!-- Storage Limit Modal -->
   <div class="modal-overlay" id="storageOverlay" onclick="if(event.target.id==='storageOverlay')closeStorageModal()">
     <div class="glass modal">
       <div class="modal-header">
@@ -220,8 +238,8 @@
     function isLocked(u) { return u.locked_until && new Date(u.locked_until) > new Date(); }
 
     function getStatusBadge(u) {
-      if (u.is_dormant) return `<span class="badge-dormant">😴 Dormant</span>`;
-      if (isLocked(u)) return `<span class="badge-locked">🔒 Locked</span>`;
+      if (u.is_dormant) return `<span class="badge-dormant">Dormant</span>`;
+      if (isLocked(u)) return `<span class="badge-locked">Locked</span>`;
       return `<span class="badge-active">✓ Active</span>`;
     }
 
@@ -235,8 +253,8 @@
     }
 
     function formatStorageCell(limit) {
-      if (!limit) return `<div style="font-size:0.78rem;color:var(--text3);">No limit</div>`;
-      return `<div style="font-size:0.78rem;color:var(--text2);">${formatSize(limit)}</div>`;
+      if (!limit) return `<span style="font-size:0.78rem;color:var(--text3);">No limit</span>`;
+      return `<span style="font-size:0.78rem;color:var(--text2);">${formatSize(limit)}</span>`;
     }
 
     async function loadAll() { await Promise.all([loadUsers(), loadRequests()]); }
@@ -260,7 +278,10 @@
       document.getElementById("statSlots").textContent = Math.max(0, maxAccount - nonAdmins);
 
       const tbody = document.getElementById("userTableBody");
-      if (!users.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:2.5rem;">No users found.</td></tr>`; return; }
+      if (!users.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:2.5rem;">No users found.</td></tr>`;
+        return;
+      }
 
       tbody.innerHTML = users.map(u => {
         const isSelf = u.name === user?.name;
@@ -269,8 +290,9 @@
           : `<span class="badge-normal">Member</span>`;
         const actions = [];
         if (!u.is_admin && !isSelf) {
-          actions.push(`<button class="btn btn-ghost btn-sm" onclick="openStorageModal(${u.id},'${u.name.replace(/'/g,"\\'")}',${u.storage_limit||'null'})" style="gap:0.3rem;font-size:0.74rem;">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Limit</button>`);
+          actions.push(`<button class="btn btn-ghost btn-sm" onclick="openStorageModal(${u.id},'${u.name.replace(/'/g,"\\'")}',${u.storage_limit||'null'})" style="gap:0.3rem;font-size:0.74rem;" title="Set storage limit">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            <span class="hide-mobile">Limit</span></button>`);
           if (u.is_dormant) {
             actions.push(`<button class="btn btn-ghost btn-sm" onclick="dormantUnlock(${u.id})" style="gap:0.3rem;font-size:0.74rem;">Reactivate</button>`);
           } else if (isLocked(u)) {
@@ -281,15 +303,20 @@
           actions.push(`<button class="btn-icon danger" onclick="confirmDelete(${u.id},'${u.name.replace(/'/g,"\\'")}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>`);
         }
         return `<tr>
-          <td><div style="display:flex;align-items:center;gap:0.55rem;">
-            <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;flex-shrink:0;">${u.name[0].toUpperCase()}</div>
-            <span style="font-weight:600;font-size:0.86rem;">${u.name}${isSelf?` <span style="color:var(--text3);font-size:0.7rem;">(you)</span>`:''}</span>
-          </div></td>
-          <td style="color:var(--text2);font-size:0.8rem;">${u.email||'—'}</td>
-          <td>${roleBadge}</td>
-          <td>${getStatusBadge(u)}</td>
-          <td>${formatLastLogin(u.last_login)}</td>
-          <td>${formatStorageCell(u.storage_limit)}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:0.55rem;">
+              <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;flex-shrink:0;">${u.name[0].toUpperCase()}</div>
+              <div style="min-width:0;">
+                <div style="font-weight:600;font-size:0.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;">${u.name}${isSelf?` <span style="color:var(--text3);font-size:0.7rem;">(you)</span>`:''}</div>
+                <div class="col-status" style="display:none;">${getStatusBadge(u)}</div>
+              </div>
+            </div>
+          </td>
+          <td class="col-email" style="color:var(--text2);font-size:0.8rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${u.email||'—'}</td>
+          <td class="col-role">${roleBadge}</td>
+          <td class="col-status">${getStatusBadge(u)}</td>
+          <td class="col-lastlogin">${formatLastLogin(u.last_login)}</td>
+          <td class="col-storage">${formatStorageCell(u.storage_limit)}</td>
           <td><div class="action-row">${actions.join("")}</div></td>
         </tr>`;
       }).join("");
@@ -305,10 +332,7 @@
 
       const list = document.getElementById("requestsList");
       if (!requests.length) {
-        list.innerHTML = `<div style="text-align:center;color:var(--text3);padding:3rem;">
-          <div style="font-size:2rem;margin-bottom:0.75rem;">📭</div>
-          <p style="font-size:0.88rem;">No pending requests</p>
-        </div>`;
+        list.innerHTML = `<div style="text-align:center;color:var(--text3);padding:3rem;"><div style="font-size:2rem;margin-bottom:0.75rem;">📭</div><p style="font-size:0.88rem;">No pending requests</p></div>`;
         return;
       }
       list.innerHTML = requests.map(r => `
