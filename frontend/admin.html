@@ -29,6 +29,26 @@
     .req-msg{font-size:0.78rem;color:var(--text2);margin-top:0.3rem;padding:0.4rem 0.6rem;background:var(--surface2);border-radius:5px;font-style:italic;}
     .req-actions{display:flex;gap:0.4rem;flex-shrink:0;align-items:center;}
 
+    .user-table-wrap{
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius-sm);
+    }
+    .user-table{
+      min-width: 520px;
+    }
+    .user-table td:last-child,
+    .user-table th:last-child{
+      min-width: 130px;
+    }
+    .action-row{
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+    }
+
     @media(max-width:900px){
       .col-email,.col-storage{ display:none; }
     }
@@ -40,7 +60,9 @@
       .col-role,.col-lastlogin{ display:none; }
       .stat-mini{ grid-template-columns:repeat(3,1fr); }
       .user-table td,.user-table th{ padding:0.6rem 0.5rem; font-size:0.78rem; }
-      .action-row{ flex-wrap:wrap; gap:0.25rem; }
+      .user-table{ min-width:360px; } /* 모바일에서 최소 너비 완화 */
+      .user-table td:last-child,
+      .user-table th:last-child{ min-width:110px; }
       .req-card{ flex-wrap:wrap; }
       .req-actions{ width:100%; justify-content:flex-end; margin-top:0.5rem; }
       .req-actions .btn{ flex:1; justify-content:center; }
@@ -49,6 +71,9 @@
       .stat-mini{ grid-template-columns:repeat(2,1fr); }
       .content{ padding:1rem; }
       .col-status{ display:none; }
+      .user-table{ min-width:300px; }
+      .user-table td:last-child,
+      .user-table th:last-child{ min-width:100px; }
     }
   </style>
 </head>
