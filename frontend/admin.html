@@ -29,29 +29,47 @@
     .user-table{min-width:600px;width:100%;}
     .user-table td:last-child,.user-table th:last-child{min-width:140px;}
     .action-row{display:flex;align-items:center;gap:0.3rem;flex-wrap:nowrap;justify-content:flex-end;}
+    .stats-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;margin:0 -0.15rem 0.15rem;padding:0.15rem;}
+    .stats-scroll::-webkit-scrollbar,.user-table-wrap::-webkit-scrollbar{height:7px;}
+    .stats-scroll::-webkit-scrollbar-thumb,.user-table-wrap::-webkit-scrollbar-thumb{background:var(--glass-b);border-radius:99px;}
+    .stats-scroll::-webkit-scrollbar-track,.user-table-wrap::-webkit-scrollbar-track{background:transparent;}
+    .stats-scroll .stat-mini{min-width:680px;}
+    .empty-requests{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:240px;padding:2rem 1rem;border:1px dashed var(--glass-b);border-radius:var(--radius-sm);background:rgba(255,255,255,0.02);}
+    .empty-requests-icon{font-size:3.5rem;line-height:1;margin-bottom:0.9rem;filter:saturate(0.9);}
+    .empty-requests-title{font-size:0.95rem;font-weight:700;color:var(--text);}
+    .empty-requests-text{font-size:0.78rem;color:var(--text3);margin-top:0.3rem;max-width:320px;line-height:1.5;}
+
     @media(max-width:900px){
-      .col-email,.col-storage{display:none;}
-      .user-table{min-width:480px;}
+      .content{min-width:0;}
+      .user-table-wrap{overflow-x:auto;overflow-y:hidden;}
+      .user-table{min-width:760px;}
+      .user-table td,.user-table th{padding:0.65rem 0.55rem;}
+      .user-table td:last-child,.user-table th:last-child{min-width:170px;}
     }
     @media(max-width:768px){
       .sidebar{transform:translateX(-100%);transition:transform 0.3s ease;z-index:200;}
       .sidebar.open{transform:translateX(0);}
-      .main{margin-left:0!important;}
-      .col-role,.col-lastlogin{display:none;}
-      .stat-mini{grid-template-columns:repeat(3,1fr);}
-      .user-table td,.user-table th{padding:0.6rem 0.5rem;font-size:0.78rem;}
-      .user-table{min-width:360px;}
-      .user-table td:last-child,.user-table th:last-child{min-width:110px;}
-      .req-card{flex-wrap:wrap;}
+      .main{margin-left:0!important;min-width:0;}
+      .topbar-dash{padding-left:0.85rem;padding-right:0.85rem;}
+      .topbar-title{font-size:0.95rem;}
+      .content{padding:1rem;}
+      .stats-scroll{margin-left:-0.25rem;margin-right:-0.25rem;padding-left:0.25rem;padding-right:0.25rem;}
+      .stats-scroll .stat-mini{grid-template-columns:repeat(5,minmax(125px,1fr));min-width:655px;}
+      .stat-mini-card{min-height:82px;}
+      .req-card{align-items:flex-start;}
       .req-actions{width:100%;justify-content:flex-end;margin-top:0.5rem;}
       .req-actions .btn{flex:1;justify-content:center;}
     }
     @media(max-width:480px){
-      .stat-mini{grid-template-columns:repeat(2,1fr);}
-      .content{padding:1rem;}
-      .col-status{display:none;}
-      .user-table{min-width:280px;}
-      .user-table td:last-child,.user-table th:last-child{min-width:100px;}
+      .content{padding:0.8rem;}
+      .stats-scroll .stat-mini{grid-template-columns:repeat(5,minmax(118px,1fr));min-width:620px;}
+      .stat-mini-card{padding:0.8rem;}
+      .stat-mini-label{font-size:0.68rem;}
+      .stat-mini-val{font-size:1.35rem;}
+      .user-table{min-width:740px;}
+      .user-table td,.user-table th{font-size:0.76rem;}
+      .req-card{padding:0.85rem;}
+      .empty-requests{min-height:210px;}
     }
   </style>
 </head>
@@ -140,12 +158,14 @@
         </div>
 
         <div id="membersTab">
-          <div class="stat-mini">
-            <div class="stat-mini-card"><div class="stat-mini-label">Total</div><div class="stat-mini-val" id="statTotal">-</div></div>
-            <div class="stat-mini-card"><div class="stat-mini-label">Active</div><div class="stat-mini-val" id="statActive" style="color:var(--success);">-</div></div>
-            <div class="stat-mini-card"><div class="stat-mini-label">Locked</div><div class="stat-mini-val" id="statLocked" style="color:var(--danger);">-</div></div>
-            <div class="stat-mini-card"><div class="stat-mini-label">Dormant</div><div class="stat-mini-val" id="statDormant" style="color:var(--accent3);">-</div></div>
-            <div class="stat-mini-card"><div class="stat-mini-label">Slots Left</div><div class="stat-mini-val" id="statSlots">-</div></div>
+          <div class="stats-scroll" aria-label="Member statistics">
+            <div class="stat-mini">
+              <div class="stat-mini-card"><div class="stat-mini-label">Total</div><div class="stat-mini-val" id="statTotal">-</div></div>
+              <div class="stat-mini-card"><div class="stat-mini-label">Active</div><div class="stat-mini-val" id="statActive" style="color:var(--success);">-</div></div>
+              <div class="stat-mini-card"><div class="stat-mini-label">Locked</div><div class="stat-mini-val" id="statLocked" style="color:var(--danger);">-</div></div>
+              <div class="stat-mini-card"><div class="stat-mini-label">Dormant</div><div class="stat-mini-val" id="statDormant" style="color:var(--accent3);">-</div></div>
+              <div class="stat-mini-card"><div class="stat-mini-label">Slots Left</div><div class="stat-mini-val" id="statSlots">-</div></div>
+            </div>
           </div>
           <div class="section-hdr"><span class="section-title">All Members</span></div>
           <div class="user-table-wrap">
@@ -331,7 +351,12 @@
 
       const list = document.getElementById("requestsList");
       if (!requests.length) {
-        list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:3rem;"><p style="font-size:0.88rem;">No pending requests</p></div>';
+        list.innerHTML = `
+          <div class="empty-requests">
+            <div class="empty-requests-icon" aria-hidden="true">📭</div>
+            <div class="empty-requests-title">No pending requests</div>
+            <div class="empty-requests-text">New account requests will appear here when someone asks to join.</div>
+          </div>`;
         return;
       }
       list.innerHTML = requests.map(r => `
