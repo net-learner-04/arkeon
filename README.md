@@ -42,8 +42,6 @@ arkeon/
 ├── mailer.py             SendGrid email sender
 ├── .env                  Secrets (not committed)
 ├── modules.txt           Python dependencies
-├── setup1.sh             Install dependencies and run migrations
-├── setup2.sh             Start Cloudflare tunnel (optional)
 ├── migrations/           Alembic migration files
 ├── domain/user/
 │   ├── user_router.py    User API endpoints
